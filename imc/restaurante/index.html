@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura Restaurante El Sabrosón</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="titulo (3).png" alt="El Sabrosón Título" class="titulo">
+        </div>
+        
+        <div class="titfactura">
+            <h1>Factura Restaurante "El Sabrosón"</h1>
+        </div>
+
+        <div class="factura">
+            <div class="subtotal">
+                <label for="subtotalInput">Subtotal de la comida ($):</label><br>
+                <input type="number" id="subtotalInput" name="subtotal" min="0" step="0.01" required value="50.00">
+            </div>
+            
+            <div class="tipo_socio">
+                <p>Tipo de Cliente (Descuento):</p>
+
+                <label>
+                    <input type="radio" name="socio" value="0.00" checked> <img src="no socio.png" alt="Logo No Socio" class="logo-socio">
+                    No Socio (0%)
+                </label><br>
+
+                <label>
+                    <input type="radio" name="socio" value="0.05"> <img src="socio estandar.png" alt="socio estandar" class="logo-socio">
+                    Socio Estándar (5%)
+                </label><br>
+
+                <label>
+                    <input type="radio" name="socio" value="0.12"> <img src="socio premiun.png" alt="socio premium" class="logo-socio">
+                    Socio Premium (12%)
+                </label>
+            </div>
+        </div>
+        
+        <div class="calcular">
+            <button onclick="calcularTotal()">Calcular Total</button>
+        </div>
+
+        <hr>
+
+        <div class="tit_desglose">
+            <h2>Desglose de Cargos</h2>
+        </div>
+        <div class="desglose">
+            <div class="columna1">
+                <p>Propina (10%):</p>
+                <p>IVA (11%):</p>
+                <p>Descuento Aplicado:</p>
+            </div>
+            <div class="columna2">
+                <p id="propina">$0.00</p>
+                <p id="iva">$0.00</p>
+                <p id="descuento">$0.00</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="total">
+            <h2>Total Final a Pagar: $<span id="totalapagar">0.00</span></h2>
+        </div>
+    </div>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f9; /* Fondo suave */
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px; /* Ancho máximo para mejor presentación */
+            padding: 30px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Centrado de imagen y títulos */
+        .header, .titfactura, .tit_desglose, .calcular, .total {
+            text-align: center;
+        }
+
+        .titulo {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .factura {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 20px;
+            padding: 0 20px;
+            gap: 30px;
+        }
+        
+        .subtotal input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 150px;
+        }
+
+        .tipo_socio p {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .logo-socio {
+            height: 17px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        
+        .desglose {
+            display: flex;
+            width: 90%;
+            max-width: 400px;
+            margin: 10px auto;
+            justify-content: space-between;
+            font-size: 1.1em;
+        }
+
+        .columna1 p {
+            text-align: left;
+            margin: 5px 0;
+        }
+        
+        .columna2 p {
+            text-align: right;
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        
+        .total h2 {
+            font-size: 1.5em;
+            color: #2a6496;
+        }
+        
+        .calcular button {
+            padding: 10px 20px;
+            margin: 20px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .calcular button:hover {
+            background-color: #0056b3;
+        }
+        
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ccc;
+            margin: 15px 0;
+        }
+
+    </style>
+    
+    <script>
+        function calcularTotal() {
+            // 1. Obtener el Subtotal
+            const subtotalInput = document.getElementById("subtotalInput");
+            let subtotal = parseFloat(subtotalInput.value);
+
+            // Validación básica
+            if (isNaN(subtotal) || subtotal <= 0) {
+                alert("Por favor, ingrese un Subtotal válido y positivo.");
+                return; // Detiene la función
+            }
+
+            // 2. Obtener el factor de Descuento
+            // Los radio buttons están guardando el porcentaje como un valor decimal (0.00, 0.05, 0.12)
+            const radioButtons = document.getElementsByName('socio');
+            let descuentoRate = 0; // Por defecto es 0%
+            
+            for (const radio of radioButtons) {
+                if (radio.checked) {
+                    descuentoRate = parseFloat(radio.value);
+                    break;
+                }
+            }
+
+            // 3. Cálculos de Cargos Fijos (Propina 10%, IVA 11%)
+            const propinaRate = 0.10; // 10%
+            const ivaRate = 0.11;     // 11%
+
+            const propina = subtotal * propinaRate;
+            const iva = subtotal * ivaRate;
+
+            // 4. Cálculo del Descuento
+            const descuentoAplicado = subtotal * descuentoRate;
+
+            // 5. Cálculo del Total Final
+            // Total = Subtotal + Propina + IVA - Descuento
+            const totalFinal = subtotal + propina + iva - descuentoAplicado;
+            
+            // Función auxiliar para formatear a 2 decimales y agregar el signo $
+            const formatCurrency = (amount) => "$" + amount.toFixed(2);
+
+            // 6. Mostrar Resultados en el DOM
+            
+            document.getElementById("propina").textContent = formatCurrency(propina);
+            document.getElementById("iva").textContent = formatCurrency(iva);
+            document.getElementById("descuento").textContent = formatCurrency(descuentoAplicado);
+            document.getElementById("totalapagar").textContent = totalFinal.toFixed(2);
+        }
+
+        // Ejecutar el cálculo al cargar la página si hay un valor inicial (opcional)
+        document.addEventListener('DOMContentLoaded', calcularTotal);
+        
+    </script>
+</body>
+
+</html>

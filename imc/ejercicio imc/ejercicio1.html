@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body style="display: flex; justify-content: center; background-color: #f4f4f9;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 30px;">
+        <div style="display: flex; flex-direction: column; ">
+            <h1 style="text-align: center;">Calcular IMC</h1>
+            <div
+                style="background-color: white; display: flex; flex-direction: column; border: 1px solid blue; padding: 30px; border-radius: 10px; color: red;">
+                <label for="peso">Digite el peso en kg</label>
+                <input type="number" id="peso">
+                <label for="peso">Digite la estatura en metros</label>
+                <input type="number" id="estatura">
+                <button onclick="calcular()">Calcular</button>
+                <h2 id="res">Resultado</h2>
+                <h3 id="msj"></h3>
+
+            </div>
+        </div>
+        <div style="display: flex; justify-content: center;">
+            <img alt="" id="imagen">
+        </div>
+    </div>
+
+    <script>
+        let peso = document.getElementById("peso")
+        let estatura = document.getElementById("estatura")
+        let mensaje = document.getElementById("msj")
+        let imagen = document.getElementById("imagen")
+
+        function calcular() {
+            let r = peso.value / Math.pow(estatura.value, 2)
+            let m = ""
+            console.log(r);
+            if (isNaN(r) || r <= 0) {
+                m = "ERROR: No se aceptan valores vacíos, cero (0), o negativos."
+                mensaje.textContent = m
+                mensaje.style.color = "red"
+                mensaje.style.fontSize = "16px"
+                imagen.src = "./error.jpeg"
+                imagen.alt = "Error de ingreso de datos"
+            } else {
+
+
+                if (r <= 18.5) {
+                    m = "Bajo"
+                    imagen.setAttribute("src", "./bajo.jpg")
+                    mensaje.style.color = "yellow"
+                    mensaje.style.fontSize = "15px"
+                } else if (r > 18.5 && r < 24.9) {
+                    m = "Normal"
+                    imagen.src = "./normal.webp"
+                    mensaje.style.color = "green"
+
+                } else if (r > 25 && r < 29.9) {
+                    m = "Sobrepeso"
+                    imagen.src = "./sobrepeso.jpg"
+                    mensaje.style.color = "orange"
+
+                } else {
+                    m = "Obesidad"
+                    imagen.src = "./obeso.jpg"
+                    mensaje.style.color = "red"
+
+                }
+
+                console.log(m);
+                mensaje.textContent = "El estado es: " + m + " representado en: " + r
+            }
+        }
+
+
+
+    </script>
+
+    <style>
+        label,
+        input {
+            width: 400px;
+            margin: 0px 0px 20px 0;
+        }
+
+
+        button {
+            padding: 5px;
+            border: 2px solid green;
+        }
+
+        input {
+            padding: 5px;
+        }
+
+        #imagen {
+            width: 90%;
+            height: auto;
+        }
+    </style>
+
+</body>
+
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo de Envío de Mensajería</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+        }
+        .container {
+            width: 450px;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .radio-group label {
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: normal;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #error-message {
+            color: red;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        #resultado {
+            margin-top: 25px;
+            padding: 15px;
+            border: 2px solid #28a745;
+            border-radius: 5px;
+            background-color: #e2f9e6;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        #imagen-tipo {
+            display: block;
+            margin: 15px auto 0;
+            max-width: 80px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 Calculadora de Envío</h1>
+        <div id="error-message"></div>
+
+        <div class="form-group">
+            <label for="peso">Peso en kilogramos (kg):</label>
+            <input type="number" id="peso" min="0.01" step="0.01" placeholder="Ej: 2.5" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tipo">Tipo de Artículo:</label>
+            <select id="tipo" onchange="mostrarImagen()">
+                <option value="">-- Seleccione el Tipo --</option>
+                <option value="paquete">Paquetes (+12%)</option>
+                <option value="remesa">Remesas (+25%)</option>
+                <option value="sobre">Sobres (+7%)</option>
+            </select>
+            <img id="imagen-tipo" src="" alt="Imagen del tipo de artículo" style="display: none;">
+        </div>
+
+        <div class="form-group radio-group">
+            <label>Opciones Adicionales:</label>
+            <label><input type="radio" name="seguro" value="si"> Seguro Todo Riesgo (+6% Subtotal)</label>
+            <label><input type="radio" name="seguro" value="no" checked> Sin Seguro</label>
+        </div>
+
+        <button onclick="calcularCosto()">Calcular Costo Total Final</button>
+
+        <div id="resultado" style="display: none;">
+            </div>
+    </div>
+
+    <script>
+        // Valor fijo del costo por kilogramo
+        const COSTO_POR_KG = 5600; 
+
+        // Porcentajes de recargo
+        const RECARGOS = {
+            paquete: 0.12, // 12%
+            remesa: 0.25,  // 25%
+            sobre: 0.07    // 7%
+        };
+
+        // Función para mostrar la imagen basada en el tipo seleccionado
+        function mostrarImagen() {
+            const tipo = document.getElementById('tipo').value;
+            const img = document.getElementById('imagen-tipo');
+            
+            // Simulación de las rutas de las imágenes (deben existir en tu proyecto)
+            const imagenes = {
+                paquete: 'paquete.png', // 
+                remesa: 'remesa.png',   // 
+                sobre: 'sobre.png'      // 
+            };
+
+            if (tipo && imagenes[tipo]) {
+                img.src = imagenes[tipo];
+                img.style.display = 'block';
+                // Solo para el usuario, mostramos un ícono representativo
+                // Ejemplo de íconos que el usuario podría ver:
+                // Paquete: 📦
+                // Remesa: 💰
+                // Sobre: ✉️
+            } else {
+                img.style.display = 'none';
+            }
+        }
+
+        // Función principal para la validación y el cálculo
+        function calcularCosto() {
+            const pesoInput = document.getElementById('peso');
+            const tipoSelect = document.getElementById('tipo');
+            const seguroRadio = document.querySelector('input[name="seguro"]:checked');
+            const errorMessageDiv = document.getElementById('error-message');
+            const resultadoDiv = document.getElementById('resultado');
+
+            // Limpiar mensajes y resultados anteriores
+            errorMessageDiv.textContent = '';
+            resultadoDiv.style.display = 'none';
+
+            // --- REQUISITOS DE VALIDACIÓN ---
+
+            // 1. Validación de Peso
+            const peso = parseFloat(pesoInput.value);
+            if (isNaN(peso) || peso <= 0) {
+                errorMessageDiv.textContent = "❌ Por favor, ingrese un peso válido (número positivo mayor que cero) en kg.";
+                return;
+            }
+
+            // 2. Validación de Tipo de Artículo
+            const tipo = tipoSelect.value;
+            if (!tipo) {
+                errorMessageDiv.textContent = "❌ Debe seleccionar un tipo de artículo para el envío.";
+                return;
+            }
+
+            // --- REQUISITOS DE FUNCIONALIDAD (CÁLCULO) ---
+
+            // 1. Costo Base (Subtotal)
+            const subtotal = peso * COSTO_POR_KG;
+
+            // 2. Recargo por Tipo
+            const recargoTipo = subtotal * RECARGOS[tipo];
+
+            // 3. Costo del Seguro (6% sobre el Subtotal)
+            const seguroSeleccionado = seguroRadio.value === 'si';
+            const costoSeguro = seguroSeleccionado ? subtotal * 0.06 : 0;
+
+            // 4. Costo Total Final
+            // Total Final = Subtotal + Recargo por Tipo + Costo del Seguro
+            const costoTotalFinal = subtotal + recargoTipo + costoSeguro;
+
+            // 5. Visualización
+            const format = (num) => num.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
+
+            resultadoDiv.innerHTML = `
+                <h3>✅ Envío Calculado</h3>
+                <p><strong>Subtotal (Costo Base):</strong> ${format(subtotal)}</p>
+                <p><strong>Recargo por Tipo:</strong> ${format(recargoTipo)}</p>
+                <p><strong>Costo del Seguro:</strong> ${format(costoSeguro)}</p>
+                <hr>
+                <p><strong>Costo Total Final:</strong> <span style="font-size: 1.4em; color: #d9534f;">${format(costoTotalFinal)}</span></p>
+            `;
+            resultadoDiv.style.display = 'block';
+        }
+
+        // Ejecutar mostrarImagen al cargar para ocultar la imagen al inicio
+        document.addEventListener('DOMContentLoaded', mostrarImagen);
+    </script>
+</body>
+</html>
