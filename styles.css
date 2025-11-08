@@ -1,0 +1,139 @@
+/* Variables CSS para una fácil personalización */
+:root {
+    --color-principal: #3a86ff; /* Azul vibrante */
+    --color-fondo-oscuro: #1a1a2e; /* Azul casi negro */
+    --color-card-fondo: rgba(25, 25, 40, 0.85); /* Azul muy oscuro semitransparente */
+    --color-texto-claro: #e0e0e0;
+    --sombra-card: 0 8px 25px rgba(0, 0, 0, 0.5); /* Sombra más oscura y pronunciada */
+    --radio-borde: 12px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif; /* Fuente moderna */
+    background-color: var(--color-fondo-oscuro);
+    color: var(--color-texto-claro);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Evita barras de desplazamiento si el canvas se excede */
+    position: relative; /* Para que el canvas se posicione correctamente */
+}
+
+/* El lienzo del fondo animado */
+#animatedBackground {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Envía el canvas al fondo */
+}
+
+/* Contenedor principal de las tarjetas */
+.contenedor-padre {
+    display: grid;
+    /* 2 columnas para pantallas medianas/grandes, ajusta el espacio */
+    grid-template-columns: repeat(2, minmax(300px, 1fr)); 
+    grid-template-rows: repeat(2, 1fr); /* 2 filas */
+    gap: 40px; /* Espacio entre las tarjetas */
+    padding: 40px;
+    max-width: 1200px;
+    width: 100%;
+    position: relative; /* Asegura que las tarjetas estén encima del canvas */
+    z-index: 1; /* Para que las tarjetas se vean sobre el canvas */
+}
+
+/* Contenedor de cada tarjeta (para centrarla dentro de su celda de grid) */
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Estilos de la tarjeta */
+.card {
+    background-color: var(--color-card-fondo);
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-card);
+    padding: 35px;
+    text-align: center;
+    width: 100%;
+    max-width: 380px; /* Un poco más anchas */
+    border: 1px solid rgba(58, 134, 255, 0.3); /* Borde sutil azul */
+    transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out, background-color 0.4s ease;
+}
+
+/* Efecto al pasar el ratón (Hover) */
+.card:hover {
+    transform: translateY(-15px) scale(1.03); /* Más elevación y un ligero crecimiento */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7); /* Sombra más intensa */
+    background-color: rgba(35, 35, 55, 0.95); /* Un poco más opaco y oscuro al hover */
+}
+
+/* Encabezado del proyecto */
+.card h1 {
+    color: var(--color-principal);
+    font-size: 2em; /* Un poco más grande */
+    margin-bottom: 12px;
+    border-bottom: 2px solid rgba(58, 134, 255, 0.5); /* Línea divisoria azul */
+    padding-bottom: 8px;
+    text-shadow: 0 0 8px rgba(58, 134, 255, 0.6); /* Sombra de texto sutil */
+}
+
+/* Descripción */
+.descripcion {
+    font-size: 1em;
+    color: var(--color-texto-claro);
+    margin-bottom: 25px;
+    min-height: 50px; /* Aumenta el espacio para la descripción */
+    line-height: 1.5; /* Mejor legibilidad */
+}
+
+/* Enlace/Link */
+.card a {
+    text-decoration: none;
+    background-color: var(--color-principal);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 50px;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 1.1em;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.card a:hover {
+    background-color: #0056b3; /* Tono más oscuro al pasar el ratón */
+    transform: scale(1.05); /* Pequeña animación al botón */
+}
+
+/* Media Query para una columna en pantallas pequeñas */
+@media (max-width: 992px) { /* Cambiado a 992px para más flexibilidad */
+    .contenedor-padre {
+        grid-template-columns: 1fr; /* Una columna para pantallas más pequeñas */
+        grid-template-rows: auto; /* Las filas se ajustan automáticamente */
+        padding: 30px;
+        gap: 30px;
+    }
+}
+
+/* Para pantallas aún más pequeñas */
+@media (max-width: 576px) {
+    .contenedor-padre {
+        padding: 20px;
+    }
+    .card {
+        padding: 25px;
+    }
+    .card h1 {
+        font-size: 1.6em;
+    }
+    .card a {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+}
