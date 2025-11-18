@@ -18,8 +18,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden; /* Evita barras de desplazamiento si el canvas se excede */
-    position: relative; /* Para que el canvas se posicione correctamente */
+        position: relative; /* Para que el canvas se posicione correctamente */
 }
 
 /* El lienzo del fondo animado */
@@ -37,7 +36,6 @@ body {
     display: grid;
     /* 2 columnas para pantallas medianas/grandes, ajusta el espacio */
     grid-template-columns: repeat(2, minmax(300px, 1fr)); 
-    grid-template-rows: repeat(2, 1fr); /* 2 filas */
     gap: 40px; /* Espacio entre las tarjetas */
     padding: 40px;
     max-width: 1200px;
